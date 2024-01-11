@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam, SGD
@@ -17,23 +18,30 @@ X_train, X_val, Y_train, Y_val = train_test_split(
         X_train, Y_train, test_size=0.25, random_state=42)
 
 # hyperparemeters
-nr_nodes = [5, 10, 15, 20, 25, 35, 50]
-batch_sizes = [30, 25, 20, 15, 10, 5]
+nr_nodes = [20, 40, 80, 240, 350]
+batch_sizes = [60, 30, 15, 7]
 regularizations = [L2, L1]
-regularization_rates = [0.1, 0.05, 0.01, 0.005, 0.001]
+regularization_rates = [0.1, 0.05, 0.01, 0.001]
 opt_algorithms = [Adam, SGD]
-learning_rates = [0.001, 0.002, 0.005, 0.01, 0.05, 0.1]
+learning_rates = [0.001, 0.01, 0.05, 0.1]
 initializations = [Constant, GlorotNormal, GlorotUniform]
-nr_tested = 0
 
+# to keep track of what is used
+nr_tested = 0
+testing_index = 0
+index_list = [0 for _ in range(4)]
+# start wtih some initialization
 initialization = initializations[1]
 opt_algorithm = opt_algorithms[0]
-regularization = regularizations[0]
-while nr_tested < 5:
-    nodes = nr_nodes[nr_tested]
-    batch_size = batch_sizes[nr_tested]
-    regularization_rate = regularization_rates[nr_tested]
-    learning_rate = learning_rates[nr_tested]
+regularization = regularizations[1]
+
+
+# while tested 70 or less updating the hyperparemeters
+while nr_tested < 20:
+    nodes = nr_nodes[index_list[0]]
+    batch_size = batch_sizes[index_list[1]]
+    regularization_rate = regularization_rates[index_list[2]]
+    learning_rate = learning_rates[index_list[3]]
 
     # create the model
     model = Sequential()
@@ -53,4 +61,16 @@ while nr_tested < 5:
     print(f"Training Loss: {train_loss}")
     print(f"Validation Loss: {val_loss}")
 
+    # if underfitting, add overfitting
+    if float(train_loss) >= float(val_loss) * 0.8:
+        if index_list[testing_index] < 3:
+            index_list[testing_index] += 1
+        else:
+            if testing_index < 3:
+                testing_index += 1
+            else:
+                testing_index = 0
+    # else take a step back
+    else:
+        index_list[testing_index] -= 1
     nr_tested += 1

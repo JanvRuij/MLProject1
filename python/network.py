@@ -18,12 +18,13 @@ X_train, X_val, Y_train, Y_val = train_test_split(
         X_train, Y_train, test_size=0.25, random_state=42)
 
 # hyperparemeters
-nr_nodes = [20, 40, 80, 240, 350]
-batch_sizes = [60, 30, 15, 7]
+nr_nodes = [40, 80, 160, 240, 350]
+batch_sizes = [60, 30, 15, 7, 3]
+learning_rates = [0.001, 0.005, 0.01, 0.05, 0.1]
+regularization_rates = [0.1, 0.05, 0.01, 0.005, 0.03, 0.01]
+everything = [nr_nodes, batch_sizes, learning_rates, regularization_rates]
 regularizations = [L2, L1]
-regularization_rates = [0.1, 0.05, 0.01, 0.001]
 opt_algorithms = [Adam, SGD]
-learning_rates = [0.001, 0.01, 0.05, 0.1]
 initializations = [Constant, GlorotNormal, GlorotUniform]
 
 # to keep track of what is used
@@ -33,7 +34,7 @@ index_list = [0 for _ in range(4)]
 # start wtih some initialization
 initialization = initializations[1]
 opt_algorithm = opt_algorithms[0]
-regularization = regularizations[1]
+regularization = regularizations[0]
 
 
 # while tested 70 or less updating the hyperparemeters
@@ -43,6 +44,10 @@ while nr_tested < 20:
     regularization_rate = regularization_rates[index_list[2]]
     learning_rate = learning_rates[index_list[3]]
 
+    print(f"Nr nodes: {nodes}")
+    print(f"Batch size: {batch_size}")
+    print(f"Regularization rate: {regularization_rate}")
+    print(f"Learning rate: {learning_rate}")
     # create the model
     model = Sequential()
     model.add(Dense(nodes, activation='relu',
@@ -62,8 +67,8 @@ while nr_tested < 20:
     print(f"Validation Loss: {val_loss}")
 
     # if underfitting, add overfitting
-    if float(train_loss) >= float(val_loss) * 0.8:
-        if index_list[testing_index] < 3:
+    if float(train_loss) >= float(val_loss) * 0.95:
+        if index_list[testing_index] < len(everything[testing_index]) - 1:
             index_list[testing_index] += 1
         else:
             if testing_index < 3:
@@ -73,4 +78,8 @@ while nr_tested < 20:
     # else take a step back
     else:
         index_list[testing_index] -= 1
+        if testing_index < 3:
+            testing_index += 1
+        else:
+            testing_index = 0
     nr_tested += 1

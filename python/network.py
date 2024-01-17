@@ -18,10 +18,14 @@ X_train, X_val, Y_train, Y_val = train_test_split(
         X_train, Y_train, test_size=0.25, random_state=42)
 
 # hyperparemeters starting values
-nr_nodes = 50
+nr_nodes = 100
+best_nr_nodes = nr_nodes
 batch_size = 50
+best_batch_size = batch_size 
 learning_rate = 0.05
+best_learning_rate = learning_rate
 regularization_rate = 0.05
+best_regularization_rate = regularization_rate
 # Optimization algorithm, regularization and initializations
 regularizations = [L2, L1]
 opt_algorithms = [Adam, SGD]
@@ -104,7 +108,7 @@ while nr_tested < 62:
     j = random.randint(0, 1)
     muliplier = 1
     if nr_tested < 30:
-        multiplier = 10
+        multiplier = 5
     if i == 0:
         if j == 0:
             nr_nodes += 2 * multiplier
@@ -114,7 +118,7 @@ while nr_tested < 62:
         if j == 0:
             batch_size = max(batch_size - 2 * multiplier, 1)
         else:
-            batch_size = batch_size + 2
+            batch_size = batch_size + 2 * multiplier
     elif i == 2:
         if j == 0:
             learning_rate += 0.005 * multiplier

@@ -18,8 +18,8 @@ X_train, X_val, Y_train, Y_val = train_test_split(
         X_train, Y_train, test_size=0.25, random_state=42)
 
 # hyperparemeters starting values
-nr_nodes = 10
-batch_size = 10
+nr_nodes = 50
+batch_size = 50
 learning_rate = 0.05
 regularization_rate = 0.05
 # Optimization algorithm, regularization and initializations
@@ -102,27 +102,32 @@ while nr_tested < 62:
     # switch hyperparamter and take step
     i = nr_tested % 4
     j = random.randint(0, 1)
+    muliplier = 1
+    if nr_tested < 30:
+        multiplier = 10
     if i == 0:
         if j == 0:
-            nr_nodes += 2
+            nr_nodes += 2 * multiplier
         else:
-            nr_nodes = max(nr_nodes - 2, 1)
+            nr_nodes = max(nr_nodes - 2 * multiplier, 1)
     elif i == 1:
         if j == 0:
-            batch_size = max(batch_size - 2, 1)
+            batch_size = max(batch_size - 2 * multiplier, 1)
         else:
             batch_size = batch_size + 2
     elif i == 2:
         if j == 0:
-            learning_rate += 0.01
+            learning_rate += 0.005 * multiplier
+
         else:
-            learning_rate = max(learning_rate - 0.01, 0.00001)
+            learning_rate = max(learning_rate - 0.005 * multiplier, 0.00001)
         last_learning_rate = learning_rate
     else:
         if j == 0:
-            regularization_rate = max(regularization_rate - 0.01, 0)
+            regularization_rate = max(regularization_rate - 0.005 * multiplier, 0)
         else:
-            regularization_rate = regularization_rate + 0.01
+            regularization_rate = regularization_rate + 0.005 * multiplier
+
     # count
     nr_tested += 1
 

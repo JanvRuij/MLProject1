@@ -18,13 +18,13 @@ X_train, X_val, Y_train, Y_val = train_test_split(
         X_train, Y_train, test_size=0.25, random_state=42)
 
 # hyperparemeters starting values
-nr_nodes = 100
+nr_nodes = 15
 best_nr_nodes = nr_nodes
-batch_size = 50
-best_batch_size = batch_size 
-learning_rate = 0.05
+batch_size = 15
+best_batch_size = batch_size
+learning_rate = 0.01
 best_learning_rate = learning_rate
-regularization_rate = 0.05
+regularization_rate = 0.01
 best_regularization_rate = regularization_rate
 # Optimization algorithm, regularization and initializations
 regularizations = [L2, L1]
@@ -34,6 +34,8 @@ initializations = [GlorotNormal, GlorotUniform]
 # to keep track of what is used
 nr_tested = 0
 i = 0
+j = 0
+multiplier = 0
 
 # while tested 70 or less updating the hyperparemeters
 val_loss = float('inf')
@@ -57,7 +59,7 @@ for initialization in initializations:
             train_loss = float(history.history["loss"][-1])
             # validate the model
             val_loss = float(model.evaluate(X_val, Y_val, verbose=0))
-            if val_loss + train_loss < best:
+            if val_loss + train_loss < best and train_loss > val_loss * 0.85:
                 best_initialization = initialization
                 best_opt_algorithm = opt_algorithm
                 best_regularization = regularization
@@ -92,49 +94,61 @@ while nr_tested < 62:
     print(f"Training Loss: {train_loss}")
     print(f"Validation Loss: {val_loss}")
     # if we are overfitting or we are not improving: reset
-    if val_loss + train_loss > best or train_loss <= val_loss * 0.85:
+    if val_loss + train_loss > best or train_loss <= val_loss * 0.5:
         nr_nodes = best_nr_nodes
         batch_size = best_batch_size
         learning_rate = best_learning_rate
         regularization_rate = best_regularization_rate
-    else:
+    elif val_loss + train_loss < best:
         best = val_loss + train_loss
         best_nr_nodes = nr_nodes
         best_batch_size = batch_size
         best_regularization_rate = regularization_rate
         best_learning_rate = learning_rate
+
     # switch hyperparamter and take step
     i = nr_tested % 4
-    j = random.randint(0, 1)
+    if nr_tested // 4 % 2 == 0:
+        j = 1
+    else:
+        j = 0
     muliplier = 1
-    if nr_tested < 30:
+    if nr_tested < 15:
         multiplier = 5
+    elif nr_tested < 30:
+        multiplier = 3
+    elif nr_tested < 40:
+        multiplier = 2
+
     if i == 0:
         if j == 0:
-            nr_nodes += 2 * multiplier
+            nr_nodes += multiplier
         else:
-            nr_nodes = max(nr_nodes - 2 * multiplier, 1)
+            nr_nodes = max(nr_nodes - multiplier, 1)
     elif i == 1:
         if j == 0:
-            batch_size = max(batch_size - 2 * multiplier, 1)
+            batch_size = max(batch_size - multiplier, 1)
         else:
-            batch_size = batch_size + 2 * multiplier
+            batch_size = batch_size + multiplier
     elif i == 2:
         if j == 0:
-            learning_rate += 0.005 * multiplier
-
+            learning_rate += 0.001 * multiplier
         else:
-            learning_rate = max(learning_rate - 0.005 * multiplier, 0.00001)
-        last_learning_rate = learning_rate
+            learning_rate = max(learning_rate - 0.001 * multiplier, 0.00001)
     else:
         if j == 0:
-            regularization_rate = max(regularization_rate - 0.005 * multiplier, 0)
+            regularization_rate = max(regularization_rate - 0.001 * multiplier,
+                                      0)
         else:
-            regularization_rate = regularization_rate + 0.005 * multiplier
-
+            regularization_rate = regularization_rate + 0.001 * multiplier
     # count
     nr_tested += 1
 
+
+print(f"\nBest nr nodes: {best_nr_nodes}")
+print(f"Best batch size: {best_batch_size}")
+print(f"Best regularization rate: {best_regularization_rate}")
+print(f"Best learning rate: {best_learning_rate}\n")
 # create the model
 model = Sequential()
 model.add(Dense(best_nr_nodes, activation='relu',

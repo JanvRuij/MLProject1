@@ -1,5 +1,4 @@
 import numpy as np
-import random
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam, SGD
@@ -113,10 +112,12 @@ while nr_tested < 62:
     else:
         j = 0
     muliplier = 1
-    if nr_tested < 15:
-        multiplier = 5
+    if nr_tested < 10:
+        multiplier = 10
+    elif nr_tested < 20:
+        multiplier = 7
     elif nr_tested < 30:
-        multiplier = 3
+        multiplier = 4
     elif nr_tested < 40:
         multiplier = 2
 

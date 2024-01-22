@@ -162,4 +162,4 @@ model.compile(optimizer=best_opt_algorithm(learning_rate=best_learning_rate),
 history = model.fit(X_train, Y_train, epochs=25,
                     batch_size=batch_size, verbose=0)
 test_score = float(model.evaluate(X_test, Y_test, verbose=0))
-print(f"Final testing score: {test_score}")
+rint(f"Final testing score: {test_score}")

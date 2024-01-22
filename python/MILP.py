@@ -17,11 +17,10 @@ X_train, X_test, Y_train, Y_test = train_test_split(
 N = len(Y_train)
 print(N)
 P = len(X[0])
-M = 10000
+M = 10000000
 
 # create milp model
 model = gp.Model("MILP")
-model.setParam("Timelimit", 15)
 
 # add variables
 Y_pred = model.addVars(N, vtype=GRB.BINARY, name="Y_pred")
@@ -70,11 +69,7 @@ model.addConstrs(-Y_train[i] + Y_pred[i] <= aux[i] for i in range(N))
 model.setObjective(gp.quicksum(aux[i] for i in range(N))
                    + lam * (gp.quicksum(A[i, j] * A[i, j]
                    for i in range(N) for j in range(nr_nodes))
-                   + gp.quicksum(Wcorrect_1[j, p] - Wcorrect_1[j+1, p]
-                   for j in range(nr_nodes - 1) for p in range(P)) - B2
-                   + gp.quicksum(B1[j] - B1[j+1] for j in range(nr_nodes-1))
-                   + gp.quicksum(Wcorrect_2[j] - Wcorrect_2[j+1] for j in range(nr_nodes-1)))
-                   , GRB.MINIMIZE)
+                   - B2), GRB.MINIMIZE)
 
 
 model.optimize()
@@ -105,4 +100,13 @@ Y_test_pred = np.dot(first_node_values.T, Wcorrect_2_values) + B2_value
 Y_test_pred = np.where(Y_test_pred > 0, 1, 0)
 print(Y_test_pred)
 print(Y_test)
+# Avoid log(0) by adding a small epsilon
+epsilon = 1e-15
+
+# Clip predicted probabilities to avoid log(0) or log(1)
+Y_test_pred = np.clip(Y_test_pred, epsilon, 1 - epsilon)
+
+# Calculate binary cross entropy
+binary_cross_entropy = -np.mean(Y_test * np.log(Y_test_pred) + (1 - Y_test) * np.log(1 - Y_test_pred))
+print(binary_cross_entropy)
 

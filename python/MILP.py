@@ -17,7 +17,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(
 N = len(Y_train)
 print(N)
 P = len(X[0])
-M = 10000000
+M = 10000000000000000
 
 # create milp model
 model = gp.Model("MILP")
@@ -67,9 +67,8 @@ model.addConstrs(Y_train[i] - Y_pred[i] <= aux[i] for i in range(N))
 model.addConstrs(-Y_train[i] + Y_pred[i] <= aux[i] for i in range(N))
 # Set objective function
 model.setObjective(gp.quicksum(aux[i] for i in range(N))
-                   + lam * (gp.quicksum(A[i, j] * A[i, j]
-                   for i in range(N) for j in range(nr_nodes))
-                   - B2), GRB.MINIMIZE)
+                   + lam * gp.quicksum(A[i, j] * A[i, j]
+                   for i in range(N) for j in range(nr_nodes)), GRB.MINIMIZE)
 
 
 model.optimize()

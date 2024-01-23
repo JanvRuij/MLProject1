@@ -1,0 +1,37 @@
+\section{Question 2}
+\subsection*{A}
+Since we can control the output of the Relu activation function, any output can be produced by $Transpose(W_{j1}^2) * a + b_1^2$. Even setting the weights to just ones only, would not be a problem for outputting any real number, as long as the output of the activation function can be determined.
+\subsection*{B}
+To replicate the Relu activation function we need to apply the max function in linear fashion. This is done using a large number $M$, a binary variable $z$, a variable for adjustment $S$, and the output of the Relu functin as $A$. To write everything out we first denote the following: the number of nodes is represented by $K$, the number of observations by $N$ and the number of parameters by $P$. To write out the Relu function the following is done:
+\begin{align*}
+    % Add ReLU constraints
+    &A_{i, j} \leq (1 - Z_{i, j}) \cdot M \quad \text{for } i = 1, 2, \ldots, N, \quad j = 1, 2, \ldots, \text{K} \\
+    &A_{i, j} \geq 0 \quad \text{for } i = 1, 2, \ldots, N, \quad j = 1, 2, \ldots, \text{K} \\
+    \\
+    &S_{i, j} \leq M \cdot Z_{i, j} \quad \text{for } i = 1, 2, \ldots, N, \quad j = 1, 2, \ldots, \text{K} \\
+    &S_{i, j} \geq 0 \quad \text{for } i = 1, 2, \ldots, N, \quad j = 1, 2, \ldots, \text{K} \\
+    \\
+    % A's output equals the weights * input + bias for each node j and input i
+    % here S is to make sure it's always a positive output (ReLU)
+    &\sum_{p=1}^{P} W_{\text{eights1}, j, p} \cdot X_{\text{train}, i, p} + B1_j - A_{i, j} + S_{i, j} = 0 \\
+    &\quad \text{for } j = 1, 2, \ldots, \text{K}, \quad i = 1, 2, \ldots, N
+\end{align*}
+Now that the first activation function is defined, the step function can be created, also for the step function the large number $M$ is needed to make sure that the output of the step function is less than 0 when our predicted value is 0 and the output is greater or equal than 0 when the predicted output value equals 1. To do this, the following constraints are created:
+% if Y predict is 0, the sum of weights * activation plus bias is less than or equal to 0
+\begin{align*}
+    &\text{for } i = 1, 2, \ldots, N: \\
+    &\quad \sum_{j=1}^{\text{K}} W_{\text{eights2}, j} \cdot A_{i, j} + B2 - Y_{\text{pred}, i} \cdot M \leq 0
+\end{align*}
+To produce the absolute value in the objective function, an auxilary variable must be created which is always greater or equal than the absolute value of the true value minus the predicted value.
+% Add linearization constraints
+\begin{align*}
+    &\text{for } i = 1, 2, \ldots, N: \\
+    &\quad Y_{\text{train}, i} - Y_{\text{pred}, i} \leq \text{aux}_i \\
+    &\quad -Y_{\text{train}, i} + Y_{\text{pred}, i} \leq \text{aux}_i
+\end{align*}
+In an effort to stop the model from overfitting, L2 regularization is added. Therefore, the following objective value is obtained:
+% Set objective function
+\begin{align*}
+    &\text{minimize } \sum_{i=1}^{N} \text{aux}_i + \lambda \left( \sum_{j=1}^{\text{K}} \sum_{p=1}^{P} W_{\text{eight1}, j, p}^2 \right. \\
+    &\quad \left. + \sum_{j=1}^{\text{K}} B1_j^2 + B2 \right)
+\end{align*}

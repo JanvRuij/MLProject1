@@ -1,10 +1,23 @@
 import numpy as np
+import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam, SGD
 from keras.initializers import GlorotNormal, GlorotUniform
 from keras.regularizers import L1, L2
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+# store results for graphs
+best_loss_history = []
+best_runs_history = []
+val_loss_history = []
+num_runs_history = []
+
+# random seed for reproducibility
+seed_value = 42
+keras.utils.set_random_seed(seed_value)
+np.random.seed(seed_value)
 
 # read the data
 X = np.genfromtxt("WisconsinBreastCancerData/X.csv", delimiter=",")
@@ -60,8 +73,11 @@ for initialization in initializations:
             val_loss = float(model.evaluate(X_val, Y_val, verbose=0))
             if val_loss + train_loss < best and train_loss > val_loss * 0.85:
                 best_initialization = initialization
+                print(best_initialization)
                 best_opt_algorithm = opt_algorithm
+                print(best_opt_algorithm)
                 best_regularization = regularization
+                print(best_regularization)
                 best = val_loss + train_loss
 
 best = float('inf')
@@ -100,10 +116,15 @@ while nr_tested < 62:
         regularization_rate = best_regularization_rate
     elif val_loss + train_loss < best:
         best = val_loss + train_loss
+        best_loss_history.append(best)
+        best_runs_history.append(nr_tested)
         best_nr_nodes = nr_nodes
         best_batch_size = batch_size
         best_regularization_rate = regularization_rate
         best_learning_rate = learning_rate
+
+    val_loss_history.append(val_loss)
+    num_runs_history.append(nr_tested)
 
     # switch hyperparamter and take step
     i = nr_tested % 4
@@ -119,7 +140,9 @@ while nr_tested < 62:
     elif nr_tested < 30:
         multiplier = 4
     elif nr_tested < 40:
-        multiplier = 2
+        multiplier = 3
+    elif nr_tested < 50:
+        multiplier =  2
 
     if i == 0:
         if j == 0:
@@ -161,5 +184,30 @@ model.compile(optimizer=best_opt_algorithm(learning_rate=best_learning_rate),
 # train the model
 history = model.fit(X_train, Y_train, epochs=25,
                     batch_size=batch_size, verbose=0)
+
+train_loss = float(history.history["loss"][-1])
 test_score = float(model.evaluate(X_test, Y_test, verbose=0))
+print(f"Final training score: {train_loss}")
 print(f"Final testing score: {test_score}")
+
+
+# Plotting the total loss
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.plot(best_runs_history, best_loss_history,
+         label='Best total Loss (Val + Train)')
+plt.xlabel('Number of Runs')
+plt.ylabel('Total Loss')
+plt.title('Loss History During Training')
+plt.legend()
+
+# Plotting the best loss
+plt.subplot(1, 2, 2)
+plt.plot(num_runs_history, val_loss_history, label='Validation Loss')
+plt.xlabel('Number of Runs')
+plt.ylabel('Best Total Loss')
+plt.title('Best Loss History During Training')
+plt.legend()
+
+plt.tight_layout()
+plt.show()

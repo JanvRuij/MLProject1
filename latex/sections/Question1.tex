@@ -1,0 +1,25 @@
+\section{Question 1}
+First the data is split up into three parts: training, validation and testing. The training set is set te be 55\% of the data, the validation set 25\% and the testing set is 20\% of the data. 
+The hyperparameters are split up into two catagories, the non-numeric hyperparameters which can be set to a specific value which is not a number. To this category belong the optimization algorithm, initialization and regularization. These hyperparameters are tested with the following values:
+\begin{description}
+	\item Optimization algorithm: Stochastic gradient descent and Adams optimizer
+	\item Initialization: GlorotNormal and GlorotUniform
+	\item Regularization: L1 and L2
+\end{description}
+The overall strategy is to first find the optimal combination of non-numerical hyperparameters, and find the optimal combination of numerical parameters afterwards. To test the non-numerical hyperparameters, a Neural Network is needed, to start things off the following Neural Network with numerical hyperparameters and one hidden layer is generated:
+\begin{description}
+	\item Number of nodes: 15  
+	\item Batch size: 15
+	\item Learning rate: 0.01
+	\item Regularization rate: 0.01
+\end{description}
+After testing the non-numerical hyperparameters, the following combination seems to perform best on both the training and validation set: GlorotUniform initialization, Adams optimizer and L2 regularization. With these hyperparameters the numerical hyperparameters are being tested. The overall idea behind the strategy is to increase and decrease our hyperparameters and save the parameters that hhave been perform best so far, each time we do an iteration that is either not improving or seems te be overfitting on the data, the hyperparameters are being reset back to the best combination we have found so far. In each 10 fold of iterations we are decreasing and increasing the amount by which the hyperparameters are being adjusted, for the nodes and batch size, 10, 7, 4, 3, 2 and 1 are the sizes by which we are increasing and decreasing their values each 10 iterations respectively. For the regularization and learning rates the idea is completely similar, but now the amount is multplied by 0.01. 
+\newpage
+After running the strategy the following neural network is obtained:
+\begin{description}
+	\item Number of nodes: 7  
+	\item Batch size: 21
+	\item Learning rate: 0
+	\item Regularization rate: 0.006
+\end{description}
+This Neural Network is able to produce a score of 0.11 on the testing set. A figure showing the best total score can be found in the appendix at figure \ref{fig:NN_learning}. In this figure it can be seen that the best performing network is foun dat the end round iteration 50 and that the overal performance has large deviation in the beginning, but becomes more stable after around 30 iterations.

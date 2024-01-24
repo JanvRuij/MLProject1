@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1706023509 "main.tex" "main.pdf" "main" 1706023510 0
+["pdflatex"] 1706106762 "main.tex" "main.pdf" "main" 1706106763 0
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/jknappen/ec/ecbx1000.tfm" 1136768653 3584 2d666ecf6d466d8b007246bc2f94d9da ""
@@ -151,10 +151,10 @@
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1699545853 7883453 a3daf8b8b16f90ebf2bc796ca01e6c64 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
   "figures/Figure_1.png" 1706015873 49772 dccb0976826f6ae7e4751c37f5adbc94 ""
-  "main.aux" 1706023510 554 a9035c17168251fdb7f73dc9e63a1601 "pdflatex"
-  "main.tex" 1706023137 913 dfee1b63b6a56829dc8e91bd4e1166ff ""
-  "sections/Question1.tex" 1706020012 2839 ad7ef802630f4982e67ea49ec2542ee8 ""
-  "sections/Question2.tex" 1706023509 3096 ac3f96032f1bc1ed174e79e906777363 ""
+  "main.aux" 1706106763 597 5e3648b0a60eef4fad1bd1a9d0d68dae "pdflatex"
+  "main.tex" 1706105326 913 dfee1b63b6a56829dc8e91bd4e1166ff ""
+  "sections/Question1.tex" 1706106664 2733 a151de3b6ec7dcbfafb217d8c7b79c8a ""
+  "sections/Question2.tex" 1706106761 3311 409774a8287a7a9216ca43d8c68cf356 ""
   "sections/Question3.tex" 1706023403 1119 874659ad46d13e6bd1fc3258dcd1c7db ""
   "sections/appendix.tex" 1706022355 216 bc21a55f342faf9447920c3856364f9f ""
   (generated)

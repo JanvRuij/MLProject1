@@ -1,8 +1,12 @@
 \section{Question 2}
 \subsection*{A}
-Since we can control the output of the Relu activation function, any output can be produced by $Transpose(W_{j1}^2) * a + b_1^2$. Even setting the weights to just ones only, would not be a problem for outputting any real number, as long as the output of the activation function can be determined.
+\begin{equation}
+	f(x) = 	W_{j1}^{2T} * a + b_1^2
+	\label{eq:inside_step_function}
+\end{equation}
+In equation \ref{eq:inside_step_function} the function inside the stepfunction can be found. Here $a$ represents the output vector from the relu activation functions, this function can produce any non-negative output. Since the weights and biases can be controlled, any real number can be produced as long as the weights in equation \ref{eq:inside_step_function} can be set to both a positive and a negative value, which is the case. 
 \subsection*{B}
-To replicate the Relu activation function we need to apply the max function in linear fashion. This is done using a large number $M$, a binary variable $z$, a variable for adjustment $S$, and the output of the Relu functin as $A$. To write everything out we first denote the following: the number of nodes is represented by $K$, the number of observations by $N$ and the number of parameters by $P$. To write out the Relu function the following is done:
+To replicate the Relu activation function we need to apply the max function in linear fashion. This is done using a large number $M$, a binary variable $z$, a variable for adjustment $S$ and the output of the Relu function as $A$. To write everything out we first denote the following: the number of nodes is represented by $K$, the number of observations by $N$ and the number of parameters by $P$. To write out the Relu function the following is done:
 \begin{align*}
     % Add ReLU constraints
     &A_{i, j} \leq (1 - Z_{i, j}) \cdot M \quad \text{for } i = 1, 2, \ldots, N, \quad j = 1, 2, \ldots, \text{K} \\
@@ -16,7 +20,7 @@ To replicate the Relu activation function we need to apply the max function in l
     &\sum_{p=1}^{P} W_{\text{eights1}, j, p} \cdot X_{\text{train}, i, p} + B1_j - A_{i, j} + S_{i, j} = 0 \\
     &\quad \text{for } j = 1, 2, \ldots, \text{K}, \quad i = 1, 2, \ldots, N
 \end{align*}
-Now that the first activation function is defined, the step function can be created, also for the step function the large number $M$ is needed to make sure that the output of the step function is less than 0 when our predicted value is 0 and the output is greater or equal than 0 when the predicted output value equals 1. To do this, the following constraints are created:
+Now that the first activation function is defined, the step function can be created, again the large number $M$ is needed to make sure that the output of the step function is less than 0 when our predicted value is 0 and the output is greater or equal than 0 when the predicted output value equals 1. To do this, the following constraints are created:
 % if Y predict is 0, the sum of weights * activation plus bias is less than or equal to 0
 \begin{align*}
     &\text{for } i = 1, 2, \ldots, N: \\
